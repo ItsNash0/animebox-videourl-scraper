@@ -1,4 +1,8 @@
-const puppeteer = require("puppeteer")
+const puppeteer = require("puppeteer-extra")
+
+// add stealth plugin and use defaults (all evasion techniques)
+const StealthPlugin = require("puppeteer-extra-plugin-stealth")
+puppeteer.use(StealthPlugin())
 
 const express = require("express")
 const app = express()
@@ -19,11 +23,16 @@ app.listen(port, () => {
 
 async function getVideo(url) {
 	const browser = await puppeteer.launch({
-		headless: false,
+		headless: true,
 	})
 	const page = await browser.newPage()
+	// await page.setUserAgent(
+	// 	"User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:98.0) Gecko/20100101 Firefox/98.0"
+	// )
+	console.log(await browser.userAgent())
 	await page.goto(url)
 	// console.log(page);
+	console.log(await page.content())
 	var iframes = await page.waitForSelector("iframe[class='vjs_iframe']")
 	const iframe = await iframes.contentFrame()
 	var videourl = await iframe.waitForSelector("#video-js_html5_api")
