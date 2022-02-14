@@ -24,9 +24,10 @@ async function getVideo(url) {
 	const page = await browser.newPage()
 	await page.goto(url)
 	// console.log(page);
-	var iframe = await page.$("iframe[class='vjs_iframe']")
-	const frame = await iframe.contentFrame()
-	var videourl = await frame.waitForSelector("#video-js_html5_api")
-	return await videourl.evaluate((node) => node.src)
+	var iframes = await page.waitForSelector("iframe[class='vjs_iframe']")
+	const iframe = await iframes.contentFrame()
+	var videourl = await iframe.waitForSelector("#video-js_html5_api")
+	var result = await videourl.evaluate((node) => node.src)
 	await browser.close()
+	return await result
 }
